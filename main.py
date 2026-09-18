@@ -1,4 +1,6 @@
 def define_env(env):
+
+    @env.macro
     def status_auth(status:str):
         match status:
             case "teacher":
@@ -24,6 +26,6 @@ def define_env(env):
 
     本文主要由编者撰写
 
-    
+
 """
         
