@@ -96,3 +96,18 @@ plugins:
   - search
   - meta
   - redirects
+
+nav:
+  - 英语:
+    - 每日笔记:
+      - 九月二日: english/dailynotes/0903.md
+      - 九月三日: english/dailynotes/0904.md
+      - 九月四日: english/dailynotes/0904.md
+      - 九月七日: english/dailynotes/0907.md
+      - 九月八日: english/dailynotes/0908.md
+      - 九月九日: english/dailynotes/0909.md
+      - 九月十一日: english/dailynotes/0911.md
+      - 九月十四日: english/dailynotes/0914.md
+      - 九月十六日: english/dailynotes/0916.md
+      - 九月十七日: english/dailynotes/0917.md
+      - 九月十八日: english/dailynotes/0918.md
