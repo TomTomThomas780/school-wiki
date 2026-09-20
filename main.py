@@ -1,3 +1,4 @@
+import os
 def define_env(env):
 
     @env.macro
@@ -28,4 +29,18 @@ def define_env(env):
 
 
 """
+
+    @env.macro
+    def phrase(phrase:str):
+        fphrase=phrase.replace(" ","_")
+        if os.path.exists(f".\\docs\\english\\phrase\\{fphrase}.md"):
+            return f"[phrase](/english/phrase/{fphrase})"
+        return f"{phrase}"
+
+    @env.macro
+    def word(word:str):
+        fword=word.replace(" ","_")
+        if os.path.exists(f".\\docs\\english\\word\\{fword}.md"):
+            return f"[phrase](/english/phrase/{fword})"
+        return f"{word}"
         
