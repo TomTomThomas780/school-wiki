@@ -100,10 +100,13 @@ plugins:
 nav:
   - 英语:
     - 每日笔记:
-      - 九月二日: english/dailynotes/0903.md
-      - 九月三日: english/dailynotes/0904.md
+      - 九月二日: english/dailynotes/0902.md
+      - 九月二日补充: english/dailynotes/0902ex.md
+      - 九月三日: english/dailynotes/0903.md
       - 九月四日: english/dailynotes/0904.md
+      - 九月四日补充: english/dailynotes/0904ex.md
       - 九月七日: english/dailynotes/0907.md
+      - 九月七日补充: english/dailynotes/0907ex.md
       - 九月八日: english/dailynotes/0908.md
       - 九月九日: english/dailynotes/0909.md
       - 九月十一日: english/dailynotes/0911.md
@@ -112,3 +115,4 @@ nav:
       - 九月十七日: english/dailynotes/0917.md
       - 九月十八日: english/dailynotes/0918.md
       - 九月二十日: english/dailynotes/0920.md
+      - 九月二十日补充: english/dailynotes/0920ex.md
