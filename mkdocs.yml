@@ -81,6 +81,9 @@ markdown_extensions:
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
+  - pymdownx.snippets:
+      base_path:
+        - "docs"
 
 extra_javascript:
   - javascripts/mathjax.js
@@ -125,3 +128,11 @@ nav:
       - 九月二十日补充: english/dailynotes/0920ex.md
       - 九月二十二日补充: english/dailynotes/0922ex.md
       - 九月二十六日补充: english/dailynotes/0926ex.md
+    - 试卷答案:
+      - 中考阅读1:
+        - 多模态阅读: english/paperans/read1-zk/multi1-zk.md
+        - 补全对话: english/paperans/read1-zk/dialogue1-zk.md
+        - 语法选择: english/paperans/read1-zk/grch1-zk.md
+        - 选词填空: english/paperans/read1-zk/wordch1-zk.md
+      - 九上U1试卷: english/paperans/9au1.md
+      - 2026中考模拟卷1: english/paperans/2026preexam1-zk.md
