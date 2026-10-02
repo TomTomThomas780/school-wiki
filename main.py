@@ -33,65 +33,75 @@ def define_env(env):
     @env.macro
     def html_refer(file:str):
         return r"""
+<div id="loadingTip">加载中…</div>
+<iframe id="myIframe" src="FILEHERE" width=100% height=1000 style="border:none;display:none">
+</iframe>
+
+<style>
+  #loadingTip {
+    height: 1000px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    #loadingTip { color: #aaa; background: #111; }
+    iframe { background: #111; }
+  }
+</style>
+
 <script>
-function injectDarkCSS(iframe) {
-  try {
-    const doc = iframe.contentDocument || iframe.contentWindow.document;
-    if (!doc || !doc.head) return false;
-    if (doc.getElementById('__dark_css__')) return true;
+(function () {
+  function injectDarkCSS(iframe) {
+    try {
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      if (!doc || !doc.head) return false;
+      if (doc.getElementById('__dark_css__')) return true;
 
-    const style = doc.createElement('style');
-    style.id = '__dark_css__';
-    style.textContent = `
-     @media screen and (prefers-color-scheme: dark) {
-  body {
-    background: #111;
+      const style = doc.createElement('style');
+      style.id = '__dark_css__';
+      style.textContent = `
+        @media screen and (prefers-color-scheme: dark) {
+          body { background: #111; }
+          .wrap { filter: invert(1) hue-rotate(180deg); background: #fff; }
+          .pic, .matwrap { filter: hue-rotate(180deg) invert(1); }
+        }
+      `;
+      doc.head.appendChild(style);
+      return true;
+    } catch (e) {
+      console.warn('无法注入 iframe CSS，可能是跨域：', e);
+      return false;
+    }
   }
 
-  .wrap {
-    filter: invert(1) hue-rotate(180deg);
-    background: #fff;
+  const iframe = document.getElementById('myIframe');
+  if (!iframe) return;
+
+  let done = false;
+
+  function finish() {
+    if (done) return;
+    done = true;
+    const tip = document.getElementById('loadingTip');
+    if (tip) tip.remove();
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      iframe.style.display = 'block';
+    }));
   }
 
-  .pic {
-    filter: hue-rotate(180deg) invert(1);
-  }
-  .matwrap {
-    filter: hue-rotate(180deg) invert(1);
-  }
-}
-    `;
-    doc.head.appendChild(style);
-    return true;
-  } catch (e) {
-    console.warn('无法注入 iframe CSS，可能是跨域：', e);
-    return false;
-  }
-}
+  // 轮询：只注入，不显示
+  const timer = setInterval(() => {
+    injectDarkCSS(iframe);
+  }, 10);
 
-const iframe = document.getElementById('myIframe');
-let done = false;
-
-function finish() {
-  if (done) return;
-  done = true;
-  const tip = document.getElementById('loadingTip');
-  if (tip) tip.remove();
-  // 双 rAF：确保注入的样式已经重算并应用到 iframe 内部
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    iframe.style.display = 'block';
-  }));
-}
-
-// 轮询只负责尽早注入样式，不触发显示
-const timer = setInterval(() => {
-  injectDarkCSS(iframe);
-}, 10);
-
-// 等所有资源加载完，再注入一次并显示
-iframe.addEventListener('load', () => {
-  clearInterval(timer);
-  injectDarkCSS(iframe);
-  finish();
-});
+  // load：所有资源就绪，注入 + 显示
+  iframe.addEventListener('load', () => {
+    clearInterval(timer);
+    injectDarkCSS(iframe);
+    finish();
+  });
+})();
 </script>""".replace("FILEHERE",file)
