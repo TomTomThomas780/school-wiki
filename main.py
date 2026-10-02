@@ -48,60 +48,47 @@ def define_env(env):
   }
   @media (prefers-color-scheme: dark) {
     #loadingTip { color: #aaa; background: #111; }
-    iframe { background: #111; }
   }
 </style>
 
 <script>
-(function () {
-  function injectDarkCSS(iframe) {
-    try {
-      const doc = iframe.contentDocument || iframe.contentWindow.document;
-      if (!doc || !doc.head) return false;
-      if (doc.getElementById('__dark_css__')) return true;
+function injectDarkCSS(iframe) {
+  try {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    if (!doc || !doc.head) return;
 
-      const style = doc.createElement('style');
-      style.id = '__dark_css__';
-      style.textContent = `
-        @media screen and (prefers-color-scheme: dark) {
-          body { background: #111; }
-          .wrap { filter: invert(1) hue-rotate(180deg); background: #fff; }
-          .pic, .matwrap { filter: hue-rotate(180deg) invert(1); }
-        }
-      `;
-      doc.head.appendChild(style);
-      return true;
-    } catch (e) {
-      console.warn('无法注入 iframe CSS，可能是跨域：', e);
-      return false;
-    }
+    const style = doc.createElement('style');
+    style.textContent = `
+     @media screen and (prefers-color-scheme: dark) {
+  body {
+    background: #111;
   }
 
-  const iframe = document.getElementById('myIframe');
-  if (!iframe) return;
-
-  let done = false;
-
-  function finish() {
-    if (done) return;
-    done = true;
-    const tip = document.getElementById('loadingTip');
-    if (tip) tip.remove();
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      iframe.style.display = 'block';
-    }));
+  .wrap {
+    filter: invert(1) hue-rotate(180deg);
+    background: #fff;
   }
 
-  // 轮询：只注入，不显示
-  const timer = setInterval(() => {
-    injectDarkCSS(iframe);
-  }, 10);
+  .pic {
+    filter: hue-rotate(180deg) invert(1);
+  }
+  .matwrap {
+    filter: hue-rotate(180deg) invert(1);
+  }
+}
+    `;
+    doc.head.appendChild(style);
+  } catch (e) {
+    console.warn('无法注入 iframe CSS，可能是跨域：', e);
+  }
+}
 
-  // load：所有资源就绪，注入 + 显示
-  iframe.addEventListener('load', () => {
-    clearInterval(timer);
-    injectDarkCSS(iframe);
-    finish();
-  });
-})();
-</script>""".replace("FILEHERE",file)
+const iframe = document.getElementById('myIframe');
+
+iframe.addEventListener('load', () => {
+  injectDarkCSS(iframe);
+  document.getElementById('loadingTip').remove();
+  iframe.style.display = 'block';
+});
+</script>
+""".replace("FILEHERE",file)
