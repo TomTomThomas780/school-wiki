@@ -33,15 +33,29 @@ def define_env(env):
     @env.macro
     def html_refer(file:str):
         return r"""
-<iframe id="myIframe" src="FILEHERE" width=100% height=1000 style="border:none">
-
+<div id="loadingTip">加载中…</div>
+<iframe id="myIframe" src="FILEHERE" width=100% height=1000 style="border:none;display:none">
 </iframe>
+
+<style>
+  #loadingTip {
+    height: 1000px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 14px;
+  }
+  @media (prefers-color-scheme: dark) {
+    #loadingTip { color: #aaa; background: #111; }
+  }
+</style>
 
 <script>
 function injectDarkCSS(iframe) {
   try {
     const doc = iframe.contentDocument || iframe.contentWindow.document;
-    if (!doc) return;
+    if (!doc || !doc.head) return;
 
     const style = doc.createElement('style');
     style.textContent = `
@@ -71,10 +85,10 @@ function injectDarkCSS(iframe) {
 
 const iframe = document.getElementById('myIframe');
 
-// 如果 iframe 还没加载完
-iframe.addEventListener('load', () => injectDarkCSS(iframe));
-
-// 如果 iframe 已经加载完，也可以直接调用
-// injectDarkCSS(iframe);
+iframe.addEventListener('load', () => {
+  injectDarkCSS(iframe);
+  document.getElementById('loadingTip').remove();
+  iframe.style.display = 'block';
+});
 </script>
 """.replace("FILEHERE",file)
