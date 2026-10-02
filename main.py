@@ -55,9 +55,12 @@ def define_env(env):
 function injectDarkCSS(iframe) {
   try {
     const doc = iframe.contentDocument || iframe.contentWindow.document;
-    if (!doc || !doc.head) return;
+    if (!doc || !doc.head) return false;
+
+    if (doc.getElementById('__dark_css__')) return true;
 
     const style = doc.createElement('style');
+    style.id = '__dark_css__';
     style.textContent = `
      @media screen and (prefers-color-scheme: dark) {
   body {
@@ -78,17 +81,36 @@ function injectDarkCSS(iframe) {
 }
     `;
     doc.head.appendChild(style);
+    return true;
   } catch (e) {
     console.warn('无法注入 iframe CSS，可能是跨域：', e);
+    return false;
   }
 }
 
 const iframe = document.getElementById('myIframe');
+let done = false;
 
-iframe.addEventListener('load', () => {
-  injectDarkCSS(iframe);
-  document.getElementById('loadingTip').remove();
+function finish() {
+  if (done) return;
+  done = true;
+  const tip = document.getElementById('loadingTip');
+  if (tip) tip.remove();
   iframe.style.display = 'block';
+}
+
+// 轮询：head 一出现就注入，立即显示
+const timer = setInterval(() => {
+  if (injectDarkCSS(iframe)) {
+    clearInterval(timer);
+    finish();
+  }
+}, 10);
+
+// 兜底：load 事件后无论如何都注入并显示
+iframe.addEventListener('load', () => {
+  clearInterval(timer);
+  injectDarkCSS(iframe);
+  finish();
 });
-</script>
-""".replace("FILEHERE",file)
+</script>""".replace("FILEHERE",file)
