@@ -92,7 +92,7 @@ def define_env(env):
       style.textContent = `
         @media screen and (prefers-color-scheme: dark) {
           body { background: #111; }
-          .wrap { filter: invert(1) hue-rotate(180deg); background: #fff; }
+          .wrap { filter: invert(1) hue-rotate(180deg);}
           .pic, .matwrap { filter: hue-rotate(180deg) invert(1); }
         }
       `;
