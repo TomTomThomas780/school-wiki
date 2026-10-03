@@ -56,6 +56,8 @@ markdown_extensions:
   # Python Markdown Extensions
   - pymdownx.arithmatex:
       generic: true
+      inline_syntax: ['dollar', 'round']
+      block_syntax: ['dollar', 'square']
   - pymdownx.betterem:
       smart_enable: all
   - pymdownx.caret
