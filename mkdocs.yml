@@ -103,6 +103,10 @@ plugins:
   - redirects
 
 nav:
+  - 语文:
+    - 古文:
+      - 陈太丘与友期行: chinese/oldpassage/7a-ctqyyqx.md
+      - 《论语》十二章: chinese/oldpassage/7a-ly12z.md
   - 英语:
     - 教师笔记:
       - 试卷笔记:

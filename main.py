@@ -33,7 +33,7 @@ def define_env(env):
     @env.macro
     def html_refer(file:str):
         return r"""
-<div class="iframe-wrap">
+<<div class="iframe-wrap">
   <iframe id="myIframe" src="FILEHERE" width="100%" height="1000" style="border:none"></iframe>
   <div id="loadingTip" class="loading-tip">加载中…</div>
 </div>
@@ -50,7 +50,7 @@ def define_env(env):
     width: 100%;
     height: 1000px;
     border: none;
-    background: #f4f7f7;    /* 浅色底，和父页面一致 */
+    background: #f4f7f7;
   }
 
   .loading-tip {
@@ -61,11 +61,12 @@ def define_env(env):
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #888;
     font-size: 14px;
-    background: #f4f7f7;
-    z-index: 10;            /* 确保盖住 iframe */
+    z-index: 10;
     transition: opacity .25s;
+    /* 跟随 MkDocs 主题背景色 / 次要文字色 */
+    background: var(--md-default-bg-color, #f4f7f7);
+    color: var(--md-default-fg-color--light, #888);
   }
 
   .loading-tip.is-hide {
@@ -73,10 +74,8 @@ def define_env(env):
     pointer-events: none;
   }
 
-  @media (prefers-color-scheme: dark) {
-    .iframe-wrap iframe.myIframe { background: #111; }
-    .loading-tip { background: #111; color: #aaa; }
-  }
+  /* 已删除 @media (prefers-color-scheme: dark) 里的遮罩颜色，
+     因为变量会自动跟随 MkDocs 主题切换 */
 </style>
 
 <script>
@@ -109,7 +108,7 @@ def define_env(env):
   if (!iframe || !tip) return;
 
   const start = Date.now();
-  const MIN_SHOW = 300;    // 遮罩最少显示 300ms，避免闪一下就不见
+  const MIN_SHOW = 300;
 
   let finished = false;
 
@@ -124,7 +123,6 @@ def define_env(env):
     }, wait);
   }
 
-  // 轮询：head 出现就注入；body 有内容再撤遮罩
   const timer = setInterval(() => {
     const doc = iframe.contentDocument || iframe.contentWindow.document;
     if (!doc || !doc.head) return;
@@ -134,12 +132,10 @@ def define_env(env):
     const bodyReady = doc.body && doc.body.children.length > 0;
     if (doc.getElementById('__dark_css__') && bodyReady) {
       clearInterval(timer);
-      // 双 rAF，确保样式已经重绘
       requestAnimationFrame(() => requestAnimationFrame(finish));
     }
   }, 10);
 
-  // 兜底
   iframe.addEventListener('load', () => {
     clearInterval(timer);
     injectDarkCSS(iframe);
